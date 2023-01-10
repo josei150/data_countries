@@ -9,7 +9,7 @@ def get_country(country):
         population_label = re.findall("[\d]+ Population", ",".join(labels))
         population = []
         result = []
-        
+        print(labels)
         for data_country in countries:
             result.append(dict(zip(labels, data_country)))
         
@@ -37,6 +37,29 @@ def chart_population(country, labels, population):
     data.set_ylabel("Population")
     plt.show()
 
+def chart_percentage_population(labels, population):
+    fig, data = plt.subplots()
+    data.pie(population, labels = labels)
+    data.set_title("Percentage world population")
+    plt.show()
+
+def get_world_poputaion_percentage():
+    list_data_countries = []
+    name_countries = []
+    percentage_for_country = []
+    with open("./data_countries.csv") as data_country:
+        countries = csv.reader(data_country, delimiter=",")
+        labels = next(countries)
+
+        for data in countries:
+            list_data_countries.append(dict(zip(labels, data)))
+        
+        for data in list_data_countries:
+            name_countries.append(data["Country"])
+            percentage_for_country.append(data["World Population Percentage"])
+        
+    return name_countries, percentage_for_country
+
 if __name__ == "__main__":
     country = input("Dime el país: ")
     wrong_country = True
@@ -45,6 +68,8 @@ if __name__ == "__main__":
         try:
             labels, population = get_country(country)
             chart_population(country, labels=labels, population=population)
+            names_countries, percentage = get_world_poputaion_percentage()
+            chart_percentage_population(names_countries, percentage)
             wrong_country = False
         except KeyError as error:
             print(error)
